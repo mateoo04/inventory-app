@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Genres</title>
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <main>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if(genres){ %> <% genres.forEach(genre => { %>
+          <tr>
+            <td><%= genre.name %></td>
+          </tr>
+          <%});}%>
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>
