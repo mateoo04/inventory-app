@@ -1,4 +1,4 @@
-const { Client } = require('pg');
+const pool = require('./pool.js');
 
 const databaseUrl =
   process.env.NODE_ENV === 'production'
@@ -32,3 +32,14 @@ const moviesTableSQL = `CREATE TABLE IF NOT EXISTS movies(
     rating DECIMAL,
     is_watched BOOLEAN
 );`;
+
+async function main() {
+  console.log('Seeding...');
+  await pool.query(genresTableSQL);
+  await pool.query(directorsTableSQL);
+  await pool.query(studiosTableSQL);
+  await pool.query(moviesTableSQL);
+  console.log('Done');
+}
+
+main();
