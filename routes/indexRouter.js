@@ -1,15 +1,14 @@
 const { Router } = require('express');
-
-const moviesController = require('../controllers/moviesController');
-const directorsController = require('../controllers/directorsController');
-const genresController = require('../controllers/genresController');
-const studiosController = require('../controllers/studiosController');
+const moviesRouter = require('./moviesRouter');
+const directorsRouter = require('./directorsRouter');
+const genresRouter = require('./genresRouter');
+const studiosRouter = require('./studiosRouter');
 
 const indexRouter = Router();
 
-indexRouter.get('/', moviesController.moviesListGet);
-indexRouter.get('/directors', directorsController.directorsListGet);
-indexRouter.get('/genres', genresController.genresListGet);
-indexRouter.get('/studios', studiosController.studiosListGet);
+indexRouter.use('/', moviesRouter);
+indexRouter.use('/directors', directorsRouter);
+indexRouter.use('/genres', genresRouter);
+indexRouter.use('/studios', studiosRouter);
 
 module.exports = indexRouter;

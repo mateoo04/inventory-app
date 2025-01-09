@@ -1,0 +1,15 @@
+header {
+  display: flex;
+  justify-content: space-around;
+}
+
+.iconsContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.iconsContainer a {
+  width: 24px;
+  max-height: 30px;
+}
