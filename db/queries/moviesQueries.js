@@ -1,4 +1,5 @@
 const pool = require('../pool');
+const CustomNotFoundError = require('../../errors/CustomNotFoundError');
 
 function transformMovie(movie) {
   return {
@@ -47,7 +48,46 @@ async function getMovieById(id) {
     [id]
   );
 
+  if (rows.length === 0) throw new CustomNotFoundError('Movie not found');
+
   return transformMovie(rows.at(0));
 }
 
-module.exports = { getAllMovies, getMovieById };
+async function updateMovie({
+  title,
+  year,
+  genreId,
+  directorId,
+  studioId,
+  rating,
+  isWatched,
+  id,
+}) {
+  const result = await pool.query(
+    `UPDATE movies SET title = $1, year = $2, genre_id = $3,
+    director_id = $4, studio_id = $5, rating = $6, is_watched = $7 WHERE movie_id = $8`,
+    [title, year, genreId, directorId, studioId, rating, isWatched, id]
+  );
+
+  return result.rowCount;
+}
+
+async function saveMovie({
+  title,
+  year,
+  genreId,
+  directorId,
+  studioId,
+  rating,
+  isWatched,
+  id,
+}) {
+  const result = await pool.query(
+    `INSERT INTO movies (title, year, genre_id, director_id, studio_id, rating, is_watched) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [title, year, genreId, directorId, studioId, rating, isWatched]
+  );
+
+  return result.rowCount;
+}
+
+module.exports = { getAllMovies, getMovieById, updateMovie, saveMovie };

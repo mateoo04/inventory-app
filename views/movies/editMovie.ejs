@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= `Editing '${movie.title}'` %></title>
+  </head>
+  <body>
+    <%- include('../partials/header') %>
+    <h2>Editing the movie</h2>
+    <div>
+      <ul>
+        <% if(typeof errorMessages !== 'undefined' && Array.isArray(errorMessages) && errorMessages.length) {%>
+        <% errorMessages.forEach(message => { %>
+            <li><%= message %></li>
+        <%}); }%>
+      </ul>
+    </div>
+    <form action="/movie/<%= movie.id %>/update?_method=PUT" method="post">
+      <input type="hidden" name="_method" value="PUT" />
+
+      <label for="title"
+        >Title
+        <input type="text" id="title" name="title" value="<%= movie.title %>" required/>
+      </label>
+
+      <label for="year">
+        <input
+          type="number"
+          min="1900"
+          max="<%- new Date().getFullYear() %>"
+          step="1"
+          value="<%= movie.year %>"
+          name="year"
+          id="year"
+          required
+        />
+      </label>
+
+      <label for="rating">
+        Rating
+        <input
+          type="number"
+          min="1"
+          max="10"
+          step="1"
+          name="rating"
+          id="rating"
+          required
+          value="<%= movie.rating %>"
+        />
+      </label>
+
+      <label for="isWatched"
+        >Have you watched the movie?
+        <input
+          type="checkbox"
+          id="isWatched"
+          name="isWatched"
+          <%- movie.isWatched == true ? 'checked' : ''%>
+        />
+      </label>
+
+      <label for="genreMenu"
+        >Choose genre
+        <select name="genreId" id="genre">
+          <% genres.forEach(item => { %>
+          <option value="<%= item.genreId %>" <%- item.genreId == movie.genreId ? 'selected' : '' %>><%= item.name %></option>
+          <%}); %>
+        </select>
+      </label>
+      <label for="directorMenu"
+        >Choose director
+        <select name="directorId" id="director">
+          <% directors.forEach(item => { %>
+          <option value="<%= item.directorId %>" <%- item.directorId == movie.directorId ? 'selected' : '' %>><%= item.fullName %></option>
+          <%}); %>
+        </select>
+      </label>
+      <label for="studioMenu"
+        >Choose studio
+        <select name="studioId" id="studio">
+          <% studios.forEach(item => { %>
+          <option value="<%= item.studioId %>" <%- item.studioId == movie.studioId ? 'selected' : '' %>><%= item.name %></option>
+          <%}); %>
+        </select>
+      </label>
+
+      <input type="submit" value="SAVE CHANGES" />
+    </form>
+  </body>
+</html>

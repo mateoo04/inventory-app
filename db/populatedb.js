@@ -1,3 +1,4 @@
+require('dotenv').config();
 const pool = require('./pool.js');
 
 const databaseUrl =
@@ -35,6 +36,8 @@ const moviesTableSQL = `CREATE TABLE IF NOT EXISTS movies(
 
 async function main() {
   console.log('Seeding...');
+  console.log(`Using database: ${databaseUrl}`);
+
   await pool.query(genresTableSQL);
   await pool.query(directorsTableSQL);
   await pool.query(studiosTableSQL);
