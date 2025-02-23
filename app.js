@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(err.statusCode || 500);
-  res.render('error', { message: err.message });
+  res.render('error', { message: `${err.statusCode} Error` });
 });
 
 app.listen(port, () =>

@@ -4,10 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movies</title>
+
+    <script>
+      function confirmDeletion() {
+        return confirm('Are you sure you want to delete this move?');
+      }
+    </script>
   </head>
   <body>
     <%- include('../partials/header') %>
     <main>
+      <button onclick="window.location.href='/movie/new'">ADD MOVIE</button>
       <table>
         <thead>
           <tr>
@@ -31,7 +38,17 @@
               <a href="/movie/<%= movie.id %>/edit">
                 <img src="/icons/edit-icon.svg" alt="Edit"
               /></a>
-              <a href=""> <img src="/icons/trash-icon.svg" alt="Delete" /></a>
+              <form
+                action="/movie/<%= movie.id %>/delete?_method=DELETE"
+                method="post"
+                onsubmit="return confirmDeletion()"
+              >
+                <input type="hidden" name="_method" value="DELETE" />
+                <button type="submit">
+                  D
+                  <img src="/icons/trash-icon.svg" alt="Delete" />
+                </button>
+              </form>
             </td>
           </tr>
           <%});}%>

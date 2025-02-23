@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= `Editing '${movie.title}'` %></title>
+    <title><%- movie ? `Editing '${movie.title}'` : 'New movie' %></title>
   </head>
   <body>
     <%- include('../partials/header') %>
-    <h2>Editing the movie</h2>
+    <h2><%- movie ? 'Editing the movie' : 'New movie'%></h2>
     <div>
       <ul>
         <% if(typeof errorMessages !== 'undefined' && Array.isArray(errorMessages) && errorMessages.length) {%>
@@ -16,12 +16,12 @@
         <%}); }%>
       </ul>
     </div>
-    <form action="/movie/<%= movie.id %>/update?_method=PUT" method="post">
+    <form action="<%- movie ? '/movie/' + movie.id + '/update?_method=PUT' : '/movie/save' %>" method="post">
       <input type="hidden" name="_method" value="PUT" />
 
       <label for="title"
         >Title
-        <input type="text" id="title" name="title" value="<%= movie.title %>" required/>
+        <input type="text" id="title" name="title" value="<%- movie ? movie.title : '' %>" required/>
       </label>
 
       <label for="year">
@@ -30,7 +30,7 @@
           min="1900"
           max="<%- new Date().getFullYear() %>"
           step="1"
-          value="<%= movie.year %>"
+          value="<%- movie ? movie.year : new Date().getFullYear()%>"
           name="year"
           id="year"
           required
@@ -47,7 +47,7 @@
           name="rating"
           id="rating"
           required
-          value="<%= movie.rating %>"
+          value="<%- movie ? movie.rating : '' %>"
         />
       </label>
 
@@ -57,7 +57,7 @@
           type="checkbox"
           id="isWatched"
           name="isWatched"
-          <%- movie.isWatched == true ? 'checked' : ''%>
+          <%- movie && movie.isWatched == true ? 'checked' : ''%>
         />
       </label>
 
@@ -65,7 +65,7 @@
         >Choose genre
         <select name="genreId" id="genre">
           <% genres.forEach(genre => { %>
-          <option value="<%= genre.id %>" <%- genre.id == movie.genre.id ? 'selected' : '' %>><%= genre.name %></option>
+          <option value="<%= genre.id %>" <%- movie && genre.id == movie.genre.id ? 'selected' : '' %>><%= genre.name %></option>
           <%}); %>
         </select>
       </label>
@@ -73,7 +73,7 @@
         >Choose director
         <select name="directorId" id="director">
           <% directors.forEach(director => { %>
-          <option value="<%= director.id %>" <%- director.id == movie.director.id ? 'selected' : '' %>><%= director.fullName %></option>
+          <option value="<%= director.id %>" <%- movie && director.id == movie.director.id ? 'selected' : '' %>><%= director.fullName %></option>
           <%}); %>
         </select>
       </label>
@@ -81,7 +81,7 @@
         >Choose studio
         <select name="studioId" id="studio">
           <% studios.forEach(studio => { %>
-          <option value="<%= studio.id %>" <%- studio.id == movie.studio.id ? 'selected' : '' %>><%= studio.name %></option>
+          <option value="<%= studio.id %>" <%- movie && studio.id == movie.studio.id ? 'selected' : '' %>><%= studio.name %></option>
           <%}); %>
         </select>
       </label>

@@ -86,10 +86,23 @@ async function saveMovie({
 }) {
   const result = await pool.query(
     `INSERT INTO movies (title, year, genre_id, director_id, studio_id, rating, is_watched) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-    [title, year, genre.id, director.id, studio.id, rating, isWatched, id]
+    [title, year, genre.id, director.id, studio.id, rating, isWatched]
   );
 
   return result.rowCount;
 }
 
-module.exports = { getAllMovies, getMovieById, updateMovie, saveMovie };
+async function deleteMovie(id) {
+  const result = await pool.query(`DELETE FROM movies WHERE movie_id = $1`, [
+    id,
+  ]);
+  return result.rowCount;
+}
+
+module.exports = {
+  getAllMovies,
+  getMovieById,
+  updateMovie,
+  saveMovie,
+  deleteMovie,
+};

@@ -113,7 +113,11 @@ const moviePut = [
   },
 ];
 
-async function renderEditMovie(req, res) {
+function newMovieGet(req, res) {
+  renderEditForm(res, null);
+}
+
+async function editMovieGet(req, res) {
   const movie = await moviesDb.getMovieById(req.params.id);
 
   renderEditForm(res, movie);
@@ -133,4 +137,25 @@ async function renderEditForm(res, movie, errorMessages = []) {
   });
 }
 
-module.exports = { moviesListGet, movieDetailsGet, moviePut, renderEditMovie };
+async function movieDelete(req, res, next) {
+  try {
+    const rowCount = await moviesDb.deleteMovie(req.params.id);
+
+    if (rowCount === 0)
+      return res.render('error', { message: 'Movie not found' });
+
+    res.redirect('/');
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = {
+  moviesListGet,
+  movieDetailsGet,
+  moviePut,
+  moviePost,
+  editMovieGet,
+  newMovieGet,
+  movieDelete,
+};
