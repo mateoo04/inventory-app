@@ -64,24 +64,24 @@
       <label for="genreMenu"
         >Choose genre
         <select name="genreId" id="genre">
-          <% genres.forEach(item => { %>
-          <option value="<%= item.genreId %>" <%- item.genreId == movie.genreId ? 'selected' : '' %>><%= item.name %></option>
+          <% genres.forEach(genre => { %>
+          <option value="<%= genre.id %>" <%- genre.id == movie.genre.id ? 'selected' : '' %>><%= genre.name %></option>
           <%}); %>
         </select>
       </label>
       <label for="directorMenu"
         >Choose director
         <select name="directorId" id="director">
-          <% directors.forEach(item => { %>
-          <option value="<%= item.directorId %>" <%- item.directorId == movie.directorId ? 'selected' : '' %>><%= item.fullName %></option>
+          <% directors.forEach(director => { %>
+          <option value="<%= director.id %>" <%- director.id == movie.director.id ? 'selected' : '' %>><%= director.fullName %></option>
           <%}); %>
         </select>
       </label>
       <label for="studioMenu"
         >Choose studio
         <select name="studioId" id="studio">
-          <% studios.forEach(item => { %>
-          <option value="<%= item.studioId %>" <%- item.studioId == movie.studioId ? 'selected' : '' %>><%= item.name %></option>
+          <% studios.forEach(studio => { %>
+          <option value="<%= studio.id %>" <%- studio.id == movie.studio.id ? 'selected' : '' %>><%= studio.name %></option>
           <%}); %>
         </select>
       </label>

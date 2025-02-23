@@ -22,13 +22,13 @@
           <tr>
             <td><%= movie.title %></td>
             <td><%= movie.year %></td>
-            <td><%= movie.genreName %></td>
-            <td><%= movie.directorFullName %></td>
+            <td><%= movie.genre.name %></td>
+            <td><%= movie.director.fullName %></td>
             <td class="iconsContainer">
-              <a href="/movie/<%= movie.movieId %>">
+              <a href="/movie/<%= movie.id %>">
                 <img src="/icons/info-icon.svg" alt="Show more"
               /></a>
-              <a href="/movie/<%= movie.movieId %>/edit">
+              <a href="/movie/<%= movie.id %>/edit">
                 <img src="/icons/edit-icon.svg" alt="Edit"
               /></a>
               <a href=""> <img src="/icons/trash-icon.svg" alt="Delete" /></a>

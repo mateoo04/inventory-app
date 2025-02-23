@@ -1,20 +1,24 @@
 const pool = require('../pool');
-const CustomNotFoundError = require('../../errors/CustomNotFoundError');
+
+const Movie = require('../../model/movie');
+const Genre = require('../../model/genre');
+const Studio = require('../../model/studio');
+const Director = require('../../model/director');
 
 function transformMovie(movie) {
-  return {
-    movieId: movie.movie_id,
+  return new Movie({
+    id: movie.movie_id,
     title: movie.title,
     year: movie.year,
-    genreId: movie.genre_id,
-    directorId: movie.director_id,
-    studioId: movie.studio_id,
     rating: movie.rating,
+    genre: new Genre({ id: movie.genre_id, name: movie.genre_name }),
+    director: new Director({
+      id: movie.director_id,
+      fullName: movie.director_full_name,
+    }),
+    studio: new Studio({ id: movie.studio_id, name: movie.studio_name }),
     isWatched: movie.is_watched,
-    genreName: movie.genre_name,
-    directorFullName: movie.director_full_name,
-    studioName: movie.studio_name,
-  };
+  });
 }
 
 async function getAllMovies() {
@@ -48,17 +52,15 @@ async function getMovieById(id) {
     [id]
   );
 
-  if (rows.length === 0) throw new CustomNotFoundError('Movie not found');
-
-  return transformMovie(rows.at(0));
+  return rows.length > 0 ? transformMovie(rows.at(0)) : null;
 }
 
 async function updateMovie({
   title,
   year,
-  genreId,
-  directorId,
-  studioId,
+  genre,
+  director,
+  studio,
   rating,
   isWatched,
   id,
@@ -66,7 +68,7 @@ async function updateMovie({
   const result = await pool.query(
     `UPDATE movies SET title = $1, year = $2, genre_id = $3,
     director_id = $4, studio_id = $5, rating = $6, is_watched = $7 WHERE movie_id = $8`,
-    [title, year, genreId, directorId, studioId, rating, isWatched, id]
+    [title, year, genre.id, director.id, studio.id, rating, isWatched, id]
   );
 
   return result.rowCount;
@@ -75,16 +77,16 @@ async function updateMovie({
 async function saveMovie({
   title,
   year,
-  genreId,
-  directorId,
-  studioId,
+  genre,
+  director,
+  studio,
   rating,
   isWatched,
   id,
 }) {
   const result = await pool.query(
     `INSERT INTO movies (title, year, genre_id, director_id, studio_id, rating, is_watched) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-    [title, year, genreId, directorId, studioId, rating, isWatched]
+    [title, year, genre.id, director.id, studio.id, rating, isWatched, id]
   );
 
   return result.rowCount;

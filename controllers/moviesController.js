@@ -5,6 +5,11 @@ const directorsDb = require('../db/queries/directorsQueries');
 const genresDb = require('../db/queries/genresQueries');
 const studiosDb = require('../db/queries/studiosQueries');
 
+const Movie = require('../model/movie');
+const Genre = require('../model/genre');
+const Studio = require('../model/studio');
+const Director = require('../model/director');
+
 const CustomNotFoundError = require('../errors/CustomNotFoundError');
 
 const validateMovie = [
@@ -21,14 +26,37 @@ const validateMovie = [
     .withMessage('Rating must be a number 1 - 10'),
 ];
 
-async function moviesListGet(req, res) {
-  const movies = await moviesDb.getAllMovies();
-  res.render('movies/moviesList', { movies });
+function extractMovieFromRequestBody(req) {
+  const { title, year, genreId, directorId, studioId, rating, isWatched } =
+    req.body;
+  return new Movie({
+    id: req.params.id,
+    title,
+    genre: new Genre({ id: genreId }),
+    director: new Director({ id: directorId }),
+    studio: new Studio({ id: studioId }),
+    year,
+    rating,
+    isWatched: isWatched === 'on',
+  });
+}
+
+async function moviesListGet(req, res, next) {
+  try {
+    const movies = await moviesDb.getAllMovies();
+    res.render('movies/moviesList', { movies });
+  } catch (err) {
+    next(err);
+  }
 }
 
 async function movieDetailsGet(req, res, next) {
   try {
     const movie = await moviesDb.getMovieById(req.params.id);
+
+    if (!movie) {
+      return next(new CustomNotFoundError('Movie not found'));
+    }
 
     res.render('movies/movieDetails', { ...movie });
   } catch (err) {
@@ -36,158 +64,68 @@ async function movieDetailsGet(req, res, next) {
   }
 }
 
-async function moviePost(req, res) {
-  const { title, year, genreId, directorId, studioId, rating, isWatched } =
-    req.body;
+const moviePost = [
+  validateMovie,
+  async (req, res, next) => {
+    try {
+      const movie = extractMovieFromRequestBody(req);
 
-  if (
-    !validateMovieInput(res, title, year, rating, genreId, directorId, studioId)
-  ) {
-    return;
-  }
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(400);
+      } else {
+        const rowCount = await moviesDb.saveMovie(movie);
 
-  try {
-    await moviesDb.saveMovie({
-      id: req.params.id,
-      title,
-      year,
-      genreId,
-      directorId,
-      studioId,
-      rating,
-      isWatched: isWatched == 'on' ? 'true' : 'false',
-    });
-
-    res.redirect('/');
-  } catch {
-    res.status(505).send('Server error');
-  }
-}
-
-async function moviePut1(req, res) {
-  const { title, year, genreId, directorId, studioId, rating, isWatched } =
-    req.body;
-
-  if (
-    !validateMovieInput(res, title, year, rating, genreId, directorId, studioId)
-  ) {
-    return;
-  }
-
-  try {
-    const rowCount = await moviesDb.updateMovie({
-      id: req.params.id,
-      title,
-      year,
-      genreId,
-      directorId,
-      studioId,
-      rating,
-      isWatched: isWatched == 'on' ? 'true' : 'false',
-    });
-
-    if (rowCount == 0) {
-      return res.status(404).send({ message: 'Movie not found' });
+        if (rowCount == 0) {
+          return next(new Error('Unexpected database failure'));
+        } else res.redirect('/');
+      }
+    } catch (err) {
+      next(err);
     }
-
-    res.redirect('/');
-  } catch {
-    res.status(505).send('Server error');
-  }
-}
+  },
+];
 
 const moviePut = [
   validateMovie,
-  async (req, res) => {
-    const { title, year, genreId, directorId, studioId, rating, isWatched } =
-      req.body;
+  async (req, res, next) => {
+    try {
+      const movie = extractMovieFromRequestBody(req);
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(400);
-      renderEditForm(
-        res,
-        req.params.id,
-        title,
-        genreId,
-        directorId,
-        studioId,
-        year,
-        rating,
-        isWatched,
-        errors.array().map((error) => error.msg)
-      );
-    } else {
-      const rowCount = await moviesDb.updateMovie({
-        id: req.params.id,
-        title,
-        year,
-        genreId,
-        directorId,
-        studioId,
-        rating,
-        isWatched: isWatched == 'on' ? 'true' : 'false',
-      });
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(400);
+        renderEditForm(
+          res,
+          movie,
+          errors.array().map((error) => error.msg)
+        );
+      } else {
+        const rowCount = await moviesDb.updateMovie(movie);
 
-      if (rowCount == 0) {
-        next(res.status(404).send({ message: 'Movie not found' }));
-      } else res.redirect('/');
+        if (rowCount == 0) {
+          return next(new CustomNotFoundError('Movie not found'));
+        } else res.redirect('/');
+      }
+    } catch (err) {
+      next(err);
     }
   },
 ];
 
 async function renderEditMovie(req, res) {
-  const {
-    movieId,
-    title,
-    genreId,
-    directorId,
-    studioId,
-    year,
-    rating,
-    isWatched,
-  } = await moviesDb.getMovieById(req.params.id);
+  const movie = await moviesDb.getMovieById(req.params.id);
 
-  renderEditForm(
-    res,
-    movieId,
-    title,
-    genreId,
-    directorId,
-    studioId,
-    year,
-    rating,
-    isWatched
-  );
+  renderEditForm(res, movie);
 }
 
-async function renderEditForm(
-  res,
-  id,
-  title,
-  genreId,
-  directorId,
-  studioId,
-  year,
-  rating,
-  isWatched,
-  errorMessages = []
-) {
+async function renderEditForm(res, movie, errorMessages = []) {
   const directors = await directorsDb.getAllDirectors();
   const studios = await studiosDb.getAllStudios();
   const genres = await genresDb.getAllGenres();
 
   res.render('movies/editMovie', {
-    movie: {
-      id,
-      title,
-      genreId,
-      directorId,
-      studioId,
-      year,
-      rating,
-      isWatched,
-    },
+    movie,
     directors,
     studios,
     genres,

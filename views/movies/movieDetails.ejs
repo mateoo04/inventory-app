@@ -9,9 +9,9 @@
     <%- include('../partials/header') %>
     <h2><%= title %> (<%= year %>)</h2>
     <p><%- isWatched ? 'Watched':'Unwatched' %></p>
-    <p><%= genreName %></p>
+    <p><%= genre.name %></p>
     <p>Rating: <%= rating %>/10</p>
-    <p>Directed by <%= directorFullName %></p>
-    <p>Studio: <%= studioName %></p>
+    <p>Directed by <%= director.fullName %></p>
+    <p>Studio: <%= studio.name %></p>
   </body>
 </html>
