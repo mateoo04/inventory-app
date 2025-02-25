@@ -72,7 +72,10 @@ const moviePost = [
 
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        res.status(400);
+        req.session.movie = movie;
+        req.session.errorMessages = errors.array().map((error) => error.msg);
+
+        return res.status(400).redirect('/movies/new');
       } else {
         const rowCount = await moviesDb.saveMovie(movie);
 
@@ -94,12 +97,10 @@ const moviePut = [
 
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        res.status(400);
-        renderEditForm(
-          res,
-          movie,
-          errors.array().map((error) => error.msg)
-        );
+        req.session.movie = movie;
+        req.session.errorMessages = errors.array().map((error) => error.msg);
+
+        return res.status(400).redirect(`/movies/${movie.id}/edit`);
       } else {
         const rowCount = await moviesDb.updateMovie(movie);
 
@@ -114,16 +115,31 @@ const moviePut = [
 ];
 
 function newMovieGet(req, res) {
-  renderEditForm(res, null);
+  const errorMessages = req.session.errorMessages || [];
+  const movie = req.session.director || null;
+
+  delete req.session.errorMessages;
+  delete req.session.movie;
+
+  renderEditForm(res, movie, 'post', errorMessages);
 }
 
 async function editMovieGet(req, res) {
-  const movie = await moviesDb.getMovieById(req.params.id);
+  try {
+    const movie =
+      req.session.movie || (await moviesDb.getMovieById(req.params.id));
+    delete req.session.movie;
 
-  renderEditForm(res, movie);
+    const errorMessages = req.session.errorMessages || [];
+    delete req.session.errorMessages;
+
+    renderEditForm(res, movie, 'put', errorMessages);
+  } catch (err) {
+    next(err);
+  }
 }
 
-async function renderEditForm(res, movie, errorMessages = []) {
+async function renderEditForm(res, movie, action, errorMessages = []) {
   const directors = await directorsDb.getAllDirectors();
   const studios = await studiosDb.getAllStudios();
   const genres = await genresDb.getAllGenres();
@@ -134,6 +150,7 @@ async function renderEditForm(res, movie, errorMessages = []) {
     studios,
     genres,
     errorMessages,
+    action,
   });
 }
 

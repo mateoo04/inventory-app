@@ -3,9 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Movies</title>
+    <title>Directors</title>
     <link rel="stylesheet" href="/styles/styles.css" />
-
     <script>
       function confirmDeletion() {
         return confirm('Are you sure you want to delete this move?');
@@ -14,36 +13,29 @@
   </head>
   <body>
     <%- include('../partials/header') %>
-    <button class="add-button" onclick="window.location.href='/movies/new'">
+    <button class="add-button" onclick="window.location.href='directors/new'">
       +
     </button>
     <main>
-      <h2>Movies</h2>
+      <h2>Directors</h2>
       <table>
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Year</th>
-            <th>Genre</th>
-            <th>Director</th>
+            <th>Full Name</th>
+            <th>Birth Date</th>
           </tr>
         </thead>
         <tbody>
-          <% if(movies){ %> <% movies.forEach(movie => { %>
+          <% if(directors){ %> <% directors.forEach(director => {%>
           <tr>
-            <td><%= movie.title %></td>
-            <td><%= movie.year %></td>
-            <td><%= movie.genre.name %></td>
-            <td><%= movie.director.fullName %></td>
+            <td><%= director.fullName %></td>
+            <td><%= director.birthDate %></td>
             <td class="iconsContainer">
-              <a href="/movies/<%= movie.id %>">
-                <img src="/icons/info-icon.svg" alt="Show more"
-              /></a>
-              <a href="/movies/<%= movie.id %>/edit">
+              <a href="/directors/<%= director.id %>/edit">
                 <img src="/icons/edit-icon.svg" alt="Edit"
               /></a>
               <form
-                action="/movies/<%= movie.id %>/delete?_method=DELETE"
+                action="/directors/<%= director.id %>/delete?_method=DELETE"
                 method="post"
                 onsubmit="return confirmDeletion()"
               >

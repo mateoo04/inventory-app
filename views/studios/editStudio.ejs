@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      <%- action === 'put' ? `Editing ${studio.name}` : `New studio` %>
+    </title>
+    <link rel="stylesheet" href="/styles/styles.css" />
+  </head>
+  <body>
+    <%- include('../partials/header') %>
+    <main>
+      <h2><%- action === 'put' ? `Editing ${studio.name}` : `New studio` %></h2>
+      <div>
+        <ul>
+          <% if(typeof errorMessages !== 'undefined' &&
+          Array.isArray(errorMessages) && errorMessages.length) {%> <%
+          errorMessages.forEach(message => { %>
+          <li><%= message %></li>
+          <%}); }%>
+        </ul>
+      </div>
+
+      <form
+        action="<%- action === 'put' ? '/studios/' + studio.id + '/update?_method=PUT' : '/studios/save' %>"
+        method="post"
+      >
+        <input type="hidden" name="_method" value="PUT" />
+        <label for="name"
+          >Name
+          <input
+            required
+            type="text"
+            name="name"
+            id="name"
+            value="<%- studio ? studio.name : ''%>"
+        /></label>
+        <label for="location"
+          >Location
+          <input
+            required
+            type="text"
+            name="location"
+            id="location"
+            value="<%- studio ? studio.location : ''%>"
+        /></label>
+        <input
+          type="submit"
+          value="<%- action === 'put' ? 'SAVE CHANGES' : 'SAVE'%>"
+        />
+      </form>
+    </main>
+  </body>
+</html>

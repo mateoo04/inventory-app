@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      <%- action === 'put' ? `Editing '${director.fullName}'` : `New director`
+      %>
+    </title>
+    <link rel="stylesheet" href="/styles/styles.css" />
+  </head>
+  <body>
+    <%- include('../partials/header') %>
+    <main>
+      <h2>
+        <%- action === 'put' ? `Editing '${director.fullName}'` : `New director`
+        %>
+      </h2>
+      <div>
+        <ul>
+          <% if(typeof errorMessages !== 'undefined' &&
+          Array.isArray(errorMessages) && errorMessages.length) {%> <%
+          errorMessages.forEach(message => { %>
+          <li><%= message %></li>
+          <%}); }%>
+        </ul>
+      </div>
+
+      <form
+        action="<%- action === 'put' ? '/directors/' + director.id + '/update?_method=PUT' : '/directors/save' %>"
+        method="post"
+      >
+        <input type="hidden" name="_method" value="PUT" />
+        <label for="fullName"
+          >Full name
+          <input
+            type="text"
+            name="fullName"
+            id="fullName"
+            value="<%- director ? director.fullName : '' %>"
+            required
+        /></label>
+
+        <label for="birthDate"
+          >Date of birth
+          <input
+            type="date"
+            name="birthDate"
+            id="birthDate"
+            value="<%- director ? director.birthDate : '' %>"
+            required
+        /></label>
+        <input
+          type="submit"
+          value="<%- action === 'put' ? 'SAVE CHANGES' : 'SAVE'%>"
+        />
+      </form>
+    </main>
+  </body>
+</html>

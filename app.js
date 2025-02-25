@@ -1,14 +1,25 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('node:path');
-const indexRouter = require('./routes/indexRouter');
 const methodOverride = require('method-override');
+const session = require('express-session');
+
+const indexRouter = require('./routes/indexRouter');
 
 const app = express();
 const port = process.env.PORT || 4000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
+
+app.use(
+  session({
+    secret: 'mateos-secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: process.env.NODE_ENV === 'production' },
+  })
+);
 
 app.use('/', indexRouter);
 

@@ -3,11 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%- movie ? `Editing '${movie.title}'` : 'New movie' %></title>
+    <title><%- action === 'put' ? `Editing '${movie.title}'` : 'New movie' %></title>
+    <link rel="stylesheet" href="/styles/styles.css" />
   </head>
   <body>
     <%- include('../partials/header') %>
-    <h2><%- movie ? 'Editing the movie' : 'New movie'%></h2>
+    <main>
+    <h2><%- action === 'put' ? 'Editing the movie' : 'New movie'%></h2>
     <div>
       <ul>
         <% if(typeof errorMessages !== 'undefined' && Array.isArray(errorMessages) && errorMessages.length) {%>
@@ -16,7 +18,7 @@
         <%}); }%>
       </ul>
     </div>
-    <form action="<%- movie ? '/movie/' + movie.id + '/update?_method=PUT' : '/movie/save' %>" method="post">
+    <form action="<%- action === 'put' ? '/movies/' + movie.id + '/update?_method=PUT' : '/movies/save' %>" method="post">
       <input type="hidden" name="_method" value="PUT" />
 
       <label for="title"
@@ -24,7 +26,7 @@
         <input type="text" id="title" name="title" value="<%- movie ? movie.title : '' %>" required/>
       </label>
 
-      <label for="year">
+      <label for="year">Year
         <input
           type="number"
           min="1900"
@@ -51,7 +53,7 @@
         />
       </label>
 
-      <label for="isWatched"
+      <label class="inline-label" for="isWatched"
         >Have you watched the movie?
         <input
           type="checkbox"
@@ -86,7 +88,8 @@
         </select>
       </label>
 
-      <input type="submit" value="SAVE CHANGES" />
+      <input type="submit" value="<%- action === 'put' ? 'SAVE CHANGES' : 'SAVE'%>" />
     </form>
+    </main>
   </body>
 </html>

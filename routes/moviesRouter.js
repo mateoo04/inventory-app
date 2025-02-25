@@ -4,14 +4,14 @@ const moviesController = require('../controllers/moviesController');
 const moviesRouter = Router();
 
 moviesRouter.get('/', moviesController.moviesListGet);
-moviesRouter.get('/movie/new', moviesController.newMovieGet);
-moviesRouter.get('/movie/:id', moviesController.movieDetailsGet);
-moviesRouter.get('/movie/:id/edit', moviesController.editMovieGet);
+moviesRouter.get('/movies/new', moviesController.newMovieGet);
+moviesRouter.get('/movies/:id', moviesController.movieDetailsGet);
+moviesRouter.get('/movies/:id/edit', moviesController.editMovieGet);
 
-moviesRouter.post('/movie/save', moviesController.moviePost);
+moviesRouter.post('/movies/save', moviesController.moviePost);
 
-moviesRouter.put('/movie/:id/update', moviesController.moviePut);
+moviesRouter.put('/movies/:id/update', moviesController.moviePut);
 
-moviesRouter.delete('/movie/:id/delete', moviesController.movieDelete);
+moviesRouter.delete('/movies/:id/delete', moviesController.movieDelete);
 
 module.exports = moviesRouter;

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      <%- action === 'put' ? `Editing ${genre.name}` : `New genre` %>
+    </title>
+    <link rel="stylesheet" href="/styles/styles.css" />
+  </head>
+  <body>
+    <%- include('../partials/header') %>
+    <main>
+      <h2><%- action === 'put' ? `Editing ${genre.name}` : `New genre` %></h2>
+      <div>
+        <ul>
+          <% if(typeof errorMessages !== 'undefined' &&
+          Array.isArray(errorMessages) && errorMessages.length) {%> <%
+          errorMessages.forEach(message => { %>
+          <li><%= message %></li>
+          <%}); }%>
+        </ul>
+      </div>
+
+      <form
+        action="<%- action === 'put' ? '/genres/' + genre.id + '/update?_method=PUT' : '/genres/save' %>"
+        method="post"
+      >
+        <input type="hidden" name="_method" value="PUT" />
+        <label for="name"
+          >Name
+          <input
+            required
+            type="text"
+            name="name"
+            id="name"
+            value="<%- genre ? genre.name : ''%>"
+        /></label>
+        <input
+          type="submit"
+          value="<%- action === 'put' ? 'SAVE CHANGES' : 'SAVE'%>"
+        />
+      </form>
+    </main>
+  </body>
+</html>

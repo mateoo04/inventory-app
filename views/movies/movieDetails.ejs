@@ -4,14 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %></title>
+    <link rel="stylesheet" href="/styles/styles.css" />
   </head>
   <body>
     <%- include('../partials/header') %>
-    <h2><%= title %> (<%= year %>)</h2>
-    <p><%- isWatched ? 'Watched':'Unwatched' %></p>
-    <p><%= genre.name %></p>
-    <p>Rating: <%= rating %>/10</p>
-    <p>Directed by <%= director.fullName %></p>
-    <p>Studio: <%= studio.name %></p>
+    <main>
+      <h2><%= title %> (<%= year %>)</h2>
+      <p><%- isWatched ? 'Watched':'Unwatched' %></p>
+      <p><%= genre.name %></p>
+      <p>Rating: <%= rating %>/10</p>
+      <p>Directed by <%= director.fullName %></p>
+      <p>Studio: <%= studio.name %></p>
+    </main>
   </body>
 </html>

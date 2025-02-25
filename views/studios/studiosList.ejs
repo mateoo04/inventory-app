@@ -3,47 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Movies</title>
-    <link rel="stylesheet" href="/styles/styles.css" />
-
+    <title>Studios</title>
     <script>
       function confirmDeletion() {
         return confirm('Are you sure you want to delete this move?');
       }
     </script>
+    <link rel="stylesheet" href="/styles/styles.css" />
   </head>
   <body>
     <%- include('../partials/header') %>
-    <button class="add-button" onclick="window.location.href='/movies/new'">
+    <button class="add-button" onclick="window.location.href='/studios/new'">
       +
     </button>
     <main>
-      <h2>Movies</h2>
+      <h2>Studios</h2>
       <table>
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Year</th>
-            <th>Genre</th>
-            <th>Director</th>
+            <th>Name</th>
+            <th>Location</th>
           </tr>
         </thead>
         <tbody>
-          <% if(movies){ %> <% movies.forEach(movie => { %>
+          <% if(studios){ %> <% studios.forEach(studio => { %>
           <tr>
-            <td><%= movie.title %></td>
-            <td><%= movie.year %></td>
-            <td><%= movie.genre.name %></td>
-            <td><%= movie.director.fullName %></td>
+            <td><%= studio.name %></td>
+            <td><%= studio.location %></td>
             <td class="iconsContainer">
-              <a href="/movies/<%= movie.id %>">
-                <img src="/icons/info-icon.svg" alt="Show more"
-              /></a>
-              <a href="/movies/<%= movie.id %>/edit">
+              <a href="/studios/<%= studio.id %>/edit">
                 <img src="/icons/edit-icon.svg" alt="Edit"
               /></a>
               <form
-                action="/movies/<%= movie.id %>/delete?_method=DELETE"
+                action="/studios/<%= studio.id %>/delete?_method=DELETE"
                 method="post"
                 onsubmit="return confirmDeletion()"
               >
